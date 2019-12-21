@@ -3,14 +3,13 @@ cimport numpy as np
 import sys
 
 def load(file):
+    arrays = []
     handle = open(file+'.str','r')
-    tl = []
     for line in handle:
-        print(line.strip().split()[6:])
-        tl.append(line.strip().split()[6:])
-        sys.getsizeof(tl)
-    loci = np.array([line.strip().split()[6:] for line in handle])
+        a = np.array([line.strip().split()[6:] for line in handle])
+        arrays.append(a)
     handle.close()
+    loci = np.vstack(arrays)
     N = loci.shape[0]/2
     L = loci.shape[1]
 
