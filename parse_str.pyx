@@ -4,12 +4,17 @@ import sys
 
 def load(file):
     arrays = []
-    handle = open(file+'.str','r')
-    for line in handle:
-        a = np.array([line.strip().split()[6:] for line in handle])
-        arrays.append(a)
-    handle.close()
+    print("Opening file...")
+    with open(file, 'r) as fp:
+        line = fp.readline()
+        while line:
+            print("Creating arrays...")
+            line = fp.readline()
+            a = np.array(line.strip().split()[6:])
+            arrays.append(a)
+    print("Combining arrays...")
     loci = np.vstack(arrays)
+    print("Shaping loci...")
     N = loci.shape[0]/2
     L = loci.shape[1]
 
