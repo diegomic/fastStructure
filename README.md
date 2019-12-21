@@ -189,14 +189,14 @@ should be encoded as -9.
 ## Tests
 
 A test simulated dataset is provided in `tests/data/testdata.bed` with genotypes sampled for
-200 individuals at 500 SNP loci. The output files in `test/` were generated using the `run_tests.sh` script in the `tests` folder.
+200 individuals at 500 SNP loci. The output files in `tests/` were generated using the `run_tests.sh` script in the `tests` folder.
 
 To rerun the tests, follow the below instructions:
 
 ```console
 user@host [~] cd fastStructure/tests/
 user@host [~] chmod +x run_tests.sh
-user@host [~] ./ run_tests.sh
+user@host [~] ./run_tests.sh
 ```
 
 Executing the code with the provided test data should generate a log file identical to the ones in `tests/`, 
@@ -212,11 +212,11 @@ through the output of these runs and provide a reasonable range of values for th
 appropriate for this dataset.
 
 Assuming the algorithm was run on the test dataset for choices of K ranging from 1 to 10, and
-the output flag was --output=test/testoutput_simple, you can obtain the model complexity
+the output flag was `--output=tests/testoutput_simple`, you can obtain the model complexity
 by doing the following:
 
 ```console
-user@host [~] python chooseK.py --input=test/testoutput_simple
+user@host [~] python chooseK.py --input=tests/testoutput_simple
 Model complexity that maximizes marginal likelihood = 2
 Model components used to explain structure in data = 4
 ```
@@ -246,11 +246,11 @@ Usage: python distruct.py
 ```
 
 Assuming the algorithm was run on the test dataset for `K=5`, and
-the output flag was `--output=test/testoutput_simple`, you can generate a Distruct plot
+the output flag was `--output=tests/testoutput_simple`, you can generate a Distruct plot
 by doing the following:
 
 ```console
-user@host [~] python distruct.py -K 5 --input=test/testoutput_simple --output=test/testoutput_simple_distruct.svg
+user@host [~] python distruct.py -K 5 --input=tests/testoutput_simple --output=tests/testoutput_simple_distruct.svg
 ```
 
 ## Citation
