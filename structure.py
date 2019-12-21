@@ -190,11 +190,11 @@ if __name__ == "__main__":
     G = np.require(G, dtype=np.uint8, requirements='C')
 
     # run the variational algorithm
-    log.info("Running the variational algorithm.")
+    log.info("Running the variational algorithm...")
     Q, P, other = fastStructure.infer_variational_parameters(G, params['K'],
                                                              params['outputfile'], params['mintol'],
                                                              params['prior'], params['cv'])
 
     # write out inferred parameters
-    log.info("Running the variational algorithm.")
+    log.info("Writing output...")
     write_output(Q, P, other, params)
