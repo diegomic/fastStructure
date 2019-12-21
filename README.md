@@ -3,106 +3,83 @@
 ## Introduction
 
 *fastStructure* is a fast algorithm for inferring population structure from large SNP genotype data. 
-It is based on a variational Bayesian framework for posterior inference and is written in Python2.x. 
+It is based on a variational Bayesian framework for posterior inference and is written in `Python3.x` (thanks to the work of [@jashapiro](https://github.com/jashapiro)). 
 Here, we summarize how to setup this software package, compile the C and Cython scripts and run 
 the algorithm on a test simulated genotype dataset.
 
-## Citation
-
-Anil Raj, Matthew Stephens, and Jonathan K. Pritchard. *fastSTRUCTURE: Variational Inference of 
-Population Structure in Large SNP Data Sets*, (Genetics) June 2014 197:573-589
-[[Genetics](www.genetics.org/content/197/2/573.full),
-[Biorxiv](biorxiv.org/content/early/2013/12/02/001073)]
-
-## Parts 
+## Components of fastStructure 
 
 This repo has two components: a library of C and Cython scripts in *vars* and
 a set of Cython and pure Python scripts to load the data and run the algorithm.
 
 ## Dependencies
 
-*fastStructure* depends on 
-+ [Numpy](http://www.numpy.org/)
-+ [Scipy](http://www.scipy.org/)
-+ [Cython](http://cython.org/)
-+ [GNU Scientific Library](http://www.gnu.org/software/gsl/)
+- [Numpy](http://www.numpy.org/)
+- [Scipy](http://www.scipy.org/)
+- [Cython](http://cython.org/)
+- [GNU Scientific Library](http://www.gnu.org/software/gsl/)
 
-A number of python distributions already have the first three modules packaged in them. It is also
-straightforward to install all these dependencies 
- (1) using package managers for MACOSX and several Linux distributions,
- (2) from platform-specific binary packages, and
- (3) directly from source
+Most python distributions have the first three modules packaged in them. It's also
+straightforward to install these dependencies:
+  1. using package managers for MACOSX and several Linux distributions,
+  2. from platform-specific binary packages, and
+  3. directly from source.
 
 Here are detailed instructions for installing these dependencies, provided by
 Thierry Gosselin from Université Laval, Québec. These instructions were 
-tested on Mac OS 10.8 (Mountain Lion), 10.9 (Mavericks) and 10.10 (Yosemite). Similar steps
-will also work on other Unix/Linux distributions. (Note that the latest
+tested on Mac OS 10.8 (Mountain Lion), 10.9 (Mavericks) and 10.10 (Yosemite). (Note that the latest
 versions of Cython and GSL can be different from those below.)
 
-**1. install wget** (most Linux distributions already come with wget; this is, however, not true for the Mac OS)
-[instructions](http://gbs-cloud-tutorial.readthedocs.org/en/latest/03_computer_setup.html)
+### Installing Wget
 
-**2. install git** (git is already pre-installed on Mac OS; it is useful to have a separate installation if you would like to get the latest version)
-[instructions](http://gbs-cloud-tutorial.readthedocs.org/en/latest/08_useful.html)
+Most Linux distributions already come with wget; this is, however, not true for the Mac OS.
 
-**3. install Numpy**
+- [Mac OS Instructions](http://gbs-cloud-tutorial.readthedocs.org/en/latest/03_computer_setup.html)
 
-    cd Downloads
-    git clone http://github.com/numpy/numpy.git numpy
-    cd numpy
-    sudo python setup.py install
-    cd ..
-    sudo rm -R numpy
+### Installing git
 
-**4. install Scipy**
+Git is already pre-installed on Mac OS and is pretty easly to install on CentOS, Ubuntu, etc. if it is not already available on those systems using `yum` or `apt`.
 
-    cd Downloads
-    git clone http://github.com/scipy/scipy.git scipy
-    cd scipy
-    sudo python setup.py install
-    cd ..
-    sudo rm -R scipy
+- [Mac OS instructions](http://gbs-cloud-tutorial.readthedocs.org/en/latest/08_useful.html)
 
-**5. install Cython**
+### Installing the GNU Scientific Library
 
-    cd Downloads
-    wget http://cython.org/release/Cython-0.22.zip
-    unzip Cython-0.22.zip
-    cd Cython-0.22
-    sudo python setup.py install
-    cd ..
-    sudo rm -R Cython-0.22.zip Cython-0.22
+```bash
+cd tmp
+wget http://gnu.mirror.vexxhost.com/gsl/gsl-latest.tar.gz
+tar -zxvf gsl-latest.tar.gz -C /install/directory
+cd /install/directory/gsl-1.16
+./configure --prefix=/install/directory/gsl-1.16
+make
+make install
+```
 
-**6. install GNU Scientific Library**
+### Installing `numpy`, `scipy`, `cython`
 
-    cd Downloads
-    wget http://gnu.mirror.vexxhost.com/gsl/gsl-latest.tar.gz
-    tar -zxvf gsl-latest.tar.gz
-    cd gsl-1.16
-    ./configure
-    make
-    sudo make install
-    cd ..
-    sudo rm -R gsl-latest.tar.gz gsl-1.16
+It is easiest to install these 3 packages once you have cloned this repository using the below command:
 
-## Getting the source code
+```bash
+cd fastStructure/
+pip install -r requirements.txt
+```
 
-To obtain the source code from github, let us assume you want to clone this repo into a
-directory named `proj`:
+## Installing fastStructure
 
-    mkdir ~/proj
-    cd ~/proj
-    git clone https://github.com/rajanil/fastStructure
+`fastStructure` is not currently available on PyPi so in order to install/use it, you must clone this repository.
+
+To obtain the source code from github, clone this repo into the desired directory:
+
+```bash
+git clone https://github.com/rajanil/fastStructure
+```
 
 To retrieve the latest code updates, you can do the following:
 
-    cd ~/proj/fastStructure
-    git fetch
-    git merge origin/master
-
-You can also retrieve the code using wget by doing the following:
-
-    wget --no-check-certificate https://github.com/rajanil/fastStructure/archive/master.tar.gz
+```bash
+cd fastStructure
+git fetch
+git merge origin/master
+```
 
 ## Building Python extensions
 
@@ -111,13 +88,15 @@ files libgsl.so and libgslcblas.so, and header file
 gsl/gsl_sf_psi.h that are part of your GSL installation. For a default
 installation of GSL, the libraries (.so files) are usually found in /usr/local/lib
 and the header files (.h files) in /usr/local/include. In this case, you can add these
-lines to your .bashrc file on your home directory.
+lines to your `.bash_profile` or `.profile` file on your home directory.
 
-    export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib
-    export CFLAGS="-I/usr/local/include"
-    export LDFLAGS="-L/usr/local/lib"
+```bash
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib
+export CFLAGS="-I/usr/local/include"
+export LDFLAGS="-L/usr/local/lib"
+```
 
-Then, run `source ~/.bashrc` to set these environment variables.
+Then, run `source ~/.bash_profile` to set these environment variables.
 
 To build library extensions, you can do the following:
 
@@ -126,10 +105,12 @@ To build library extensions, you can do the following:
 
 To compile the main cython scripts, you can do the following:
 
-    cd ~/proj/fastStructure
+```bash
+    cd /fastStructure
     python setup.py build_ext --inplace
+```
 
-Each setup will create some .c and .so (shared object) files.
+Each setup will create some `.c` and `.so` (shared object) files.
 This setup may give some warnings, which are OK. If you get errors that indicate the 
 build failed, this might be because the wrong compiler is being used or 
 environment variables (like LD_LIBRARY_PATH) are set incorrectly. To use a specific
@@ -137,7 +118,7 @@ gcc compiler, you can do the following:
 
     CC=</path/to/compiler> python setup.py build_ext --inplace
 
-## Executing the code
+## Using fastStructure
 
 The main script you will need to execute is `structure.py`. To see command-line 
 options that need to be passed to the script, you can do the following:
@@ -193,7 +174,7 @@ of the file will be ignored; these typically would include IDs, metadata, etc. T
 handles bi-allelic loci. The two alleles at each locus can be encoded as desired; however, missing data
 should be encoded as -9.
 
-## Running on test data
+## Tests
 
 A test simulated dataset is provided in `test/testdata.bed` with genotypes sampled for
 200 individuals at 500 SNP loci. The output files in `test/` were generated as follows:
@@ -259,4 +240,13 @@ Assuming the algorithm was run on the test dataset for K=5, and
 the output flag was --output=test/testoutput_simple, you can generate a Distruct plot
 by doing the following:
 
-    $ python distruct.py -K 5 --input=test/testoutput_simple --output=test/testoutput_simple_distruct.svg
+```console
+user@host [~]# python distruct.py -K 5 --input=test/testoutput_simple --output=test/testoutput_simple_distruct.svg
+```
+
+## Citation
+
+Anil Raj, Matthew Stephens, and Jonathan K. Pritchard. *fastSTRUCTURE: Variational Inference of 
+Population Structure in Large SNP Data Sets*, (Genetics) June 2014 197:573-589
+[[Genetics](www.genetics.org/content/197/2/573.full),
+[Biorxiv](biorxiv.org/content/early/2013/12/02/001073)]
