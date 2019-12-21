@@ -25,12 +25,12 @@ straightforward to install these dependencies:
   2. from platform-specific binary packages, and
   3. directly from source.
 
-Here are detailed instructions for installing these dependencies, provided by
+Below are detailed instructions for installing these dependencies, provided by
 Thierry Gosselin from Université Laval, Québec. These instructions were 
 tested on Mac OS 10.8 (Mountain Lion), 10.9 (Mavericks) and 10.10 (Yosemite). (Note that the latest
 versions of Cython and GSL can be different from those below.)
 
-### Installing Wget
+### Installing wget
 
 Most Linux distributions already come with wget; this is, however, not true for the Mac OS.
 
@@ -63,7 +63,7 @@ cd fastStructure/
 pip install -r requirements.txt
 ```
 
-## Installing fastStructure
+## Building fastStructure
 
 `fastStructure` is not currently available on PyPi so in order to install/use it, you must clone this repository.
 
@@ -98,45 +98,55 @@ export LDFLAGS="-L/usr/local/lib"
 
 Then, run `source ~/.bash_profile` to set these environment variables.
 
-To build library extensions, you can do the following:
+#### Build Library Extensions
 
-    cd ~/proj/fastStructure/vars
-    python setup.py build_ext --inplace
-
-To compile the main cython scripts, you can do the following:
+To build library extensions, run the following:
 
 ```bash
-    cd /fastStructure
-    python setup.py build_ext --inplace
+cd fastStructure/vars/
+python setup.py build_ext --inplace
+```
+
+#### Compile Cython Scripts
+
+To compile the main cython scripts, run the following:
+
+```bash
+cd fastStructure/
+python setup.py build_ext --inplace
 ```
 
 Each setup will create some `.c` and `.so` (shared object) files.
-This setup may give some warnings, which are OK. If you get errors that indicate the 
+The setup may give some warnings, which are OK. If you get errors that indicate the 
 build failed, this might be because the wrong compiler is being used or 
 environment variables (like LD_LIBRARY_PATH) are set incorrectly. To use a specific
-gcc compiler, you can do the following:
+gcc compiler, try the following:
 
-    CC=</path/to/compiler> python setup.py build_ext --inplace
+```bash
+CC=</path/to/compiler> python setup.py build_ext --inplace
+```
 
 ## Using fastStructure
 
 The main script you will need to execute is `structure.py`. To see command-line 
 options that need to be passed to the script, you can do the following:
 
-    $ python structure.py
+```console
+user@host [~] python structure.py
 
-    Here is how you can use this script
+Here is how you can use this script
 
-    Usage: python structure.py
-         -K <int>  (number of populations)
-         --input=<file>  (/path/to/input/file)
-         --output=<file>  (/path/to/output/file)
-         --tol=<float>   (convergence criterion; default: 10e-6)
-         --prior={simple,logistic}   (choice of prior; default: simple)
-         --cv=<int>   (number of test sets for cross-validation, 0 implies no CV step; default: 0)
-         --format={bed,str} (format of input file; default: bed)
-         --full   (to output all variational parameters; optional)
-         --seed=<int> (manually specify seed for random number generator; optional)
+Usage: python structure.py
+        -K <int>  (number of populations)
+        --input=<file>  (/path/to/input/file)
+        --output=<file>  (/path/to/output/file)
+        --tol=<float>   (convergence criterion; default: 10e-6)
+        --prior={simple,logistic}   (choice of prior; default: simple)
+        --cv=<int>   (number of test sets for cross-validation, 0 implies no CV step; default: 0)
+        --format={bed,str} (format of input file; default: bed)
+        --full   (to output all variational parameters; optional)
+        --seed=<int> (manually specify seed for random number generator; optional)
+```
 
 fastStructure performs inference for the simplest, independent-loci, admixture model, with two choices of priors
 that can be specified using the `--prior` flag. Thus, unlike Structure, fastStructure does not require the
@@ -151,7 +161,9 @@ Assuming the input file is named `genotypes.bed` (with corresponding `genotypes.
 the output file is named `genotypes_output` and the number of populations you would like is 3, 
 you can run the algorithm as follows:
 
-    python structure.py -K 3 --input=genotypes --output=genotypes_output
+```console
+user@host [~] python structure.py -K 3 --input=genotypes --output=genotypes_output
+```
 
 This generates a `genotypes_output.3.log` file that tracks how the algorithm proceeds, and files
 `genotypes_output.3.meanQ` and `genotypes_output.3.meanP` containing the posterior mean of
@@ -176,25 +188,18 @@ should be encoded as -9.
 
 ## Tests
 
-A test simulated dataset is provided in `test/testdata.bed` with genotypes sampled for
-200 individuals at 500 SNP loci. The output files in `test/` were generated as follows:
+A test simulated dataset is provided in `tests/data/testdata.bed` with genotypes sampled for
+200 individuals at 500 SNP loci. The output files in `test/` were generated using the `run_tests.sh` script in the `tests` folder.
 
-    $ python structure.py -K 3 --input=test/testdata --output=testoutput_simple --full --seed=100
-    $ ls test/testoutput_simple*
-    test/testoutput_simple.3.log  test/testoutput_simple.3.meanP  test/testoutput_simple.3.meanQ  
-    test/testoutput_simple.3.varP  test/testoutput_simple.3.varQ
+To rerun the tests, follow the below instructions:
 
-    $ python structure.py -K 3 --input=test/testdata --output=testoutput_logistic --full --seed=100 --prior=logistic
-    $ ls test/testoutput_logistic*
-    test/testoutput_logistic.3.log    test/testoutput_logistic.3.meanQ  test/testoutput_logistic.3.varQ
-    test/testoutput_logistic.3.meanP  test/testoutput_logistic.3.varP
+```console
+user@host [~] cd fastStructure/tests/
+user@host [~] chmod +x run_tests.sh
+user@host [~] ./ run_tests.sh
+```
 
-    $ tail -n 3 test/testoutput_simple.3.log
-    Marginal Likelihood (avg over genotypes) = -0.9777044544
-    Total time = 4.7611 seconds
-    Total iterations = 160
-
-Executing the code with the provided test data should generate a log file identical to the ones in `test/`, 
+Executing the code with the provided test data should generate a log file identical to the ones in `tests/`, 
 as a final check that the source code has been downloaded and compiled correctly. The algorithm scales
 linearly with number of samples, number of loci and value of K; the expected runtime for a new dataset can be
 computed from the runtime in the above log file.
@@ -210,9 +215,11 @@ Assuming the algorithm was run on the test dataset for choices of K ranging from
 the output flag was --output=test/testoutput_simple, you can obtain the model complexity
 by doing the following:
 
-    $ python chooseK.py --input=test/testoutput_simple
-    Model complexity that maximizes marginal likelihood = 2
-    Model components used to explain structure in data = 4
+```console
+user@host [~] python chooseK.py --input=test/testoutput_simple
+Model complexity that maximizes marginal likelihood = 2
+Model components used to explain structure in data = 4
+```
 
 ## Visualizing admixture proportions
 
@@ -225,23 +232,25 @@ group the samples according to some other categorical label (e.g., geographic lo
 can be provided as a separate file using the flag --popfile. The order of labels in this file (one label per row)
 should match the order of samples in the input data files.
 
-    $ python distruct.py
+```console
+user@host [~] python distruct.py
 
-    Here is how you can use this script
+Here is how you can use this script
 
-    Usage: python distruct.py
-         -K <int>  (number of populations)
-         --input=<file>  (/path/to/input/file; same as output flag passed to structure.py)
-         --output=<file>   (/path/to/output/file)
-         --popfile=<file>  (file with known categorical labels; optional)
-         --title=<figure title>  (a title for the figure; optional)
+Usage: python distruct.py
+        -K <int>  (number of populations)
+        --input=<file>  (/path/to/input/file; same as output flag passed to structure.py)
+        --output=<file>   (/path/to/output/file)
+        --popfile=<file>  (file with known categorical labels; optional)
+        --title=<figure title>  (a title for the figure; optional)
+```
 
-Assuming the algorithm was run on the test dataset for K=5, and
-the output flag was --output=test/testoutput_simple, you can generate a Distruct plot
+Assuming the algorithm was run on the test dataset for `K=5`, and
+the output flag was `--output=test/testoutput_simple`, you can generate a Distruct plot
 by doing the following:
 
 ```console
-user@host [~]# python distruct.py -K 5 --input=test/testoutput_simple --output=test/testoutput_simple_distruct.svg
+user@host [~] python distruct.py -K 5 --input=test/testoutput_simple --output=test/testoutput_simple_distruct.svg
 ```
 
 ## Citation
