@@ -5,7 +5,7 @@ import sys
 def load(file):
     arrays = []
     print("Opening file...")
-    with open(file, 'r) as fp:
+    with open(file, 'r') as fp:
         line = fp.readline()
         while line:
             print("Creating arrays...")
