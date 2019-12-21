@@ -1,0 +1,4 @@
+numpy
+scipy
+logzero
+cython==0.22
