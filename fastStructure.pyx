@@ -78,7 +78,7 @@ def infer_variational_parameters(np.ndarray[np.uint8_t, ndim=2] G, int K, str ou
             pi = af.AlleleFreq(L, K, prior)
             if pi.prior=='logistic':
                 pi.Lambda = piG.Lambda.copy()
-            old = [pi.var_beta.copy(), pi.var_gamma.copy()]
+            #old = [pi.var_beta.copy(), pi.var_gamma.copy()]
             #diff = np.inf
             #while diff>1e-1:
             for j in xrange(5):
