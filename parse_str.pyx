@@ -1,11 +1,16 @@
 import numpy as np
 cimport numpy as np
+import sys
 
 def load(file):
-
-    # read in data from file
     handle = open(file+'.str','r')
+    tl = []
+    for line in handle:
+        print(line.strip().split()[6:])
+        tl.append(line.strip().split()[6:])
+        sys.getsizeof(tl)
     loci = np.array([line.strip().split()[6:] for line in handle])
+    handle.close()
     N = loci.shape[0]/2
     L = loci.shape[1]
 
@@ -16,6 +21,7 @@ def load(file):
 
         # assumes that missing alleles are coded as -9
         if '-9' in alleles:
+            print("Removing missing alleles...")
             alleles.remove('-9')
 
         # selecting major and minor alleles
