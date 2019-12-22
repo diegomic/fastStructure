@@ -3,17 +3,15 @@ cimport numpy as np
 import sys
 
 def load(file):
-    arrays = []
+    arrays.append(a)
     print("Opening file...")
     with open(file + '.str', 'r') as fp:
         line = fp.readline()
         print("Creating array...")
         while line:
-            print("Creating arrays...")
             line = fp.readline()
-            a = line.strip().split()[6:]
-            arrays.append(a)
-    loci = np.array(arrays)
+            result_array = np.append(result_array, [line.strip().split()[6:]])
+    loci = result_array
     print("Shaping loci...")
     N = loci.shape[0]/2
     L = loci.shape[1]
