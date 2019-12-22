@@ -7,13 +7,13 @@ def load(file):
     print("Opening file...")
     with open(file + '.str', 'r') as fp:
         line = fp.readline()
+        print("Creating array...")
         while line:
             print("Creating arrays...")
             line = fp.readline()
-            a = np.array(line.strip().split()[6:])
+            a = line.strip().split()[6:]
             arrays.append(a)
-    print("Combining arrays...")
-    loci = np.vstack(arrays)
+    loci = np.array(arrays)
     print("Shaping loci...")
     N = loci.shape[0]/2
     L = loci.shape[1]
