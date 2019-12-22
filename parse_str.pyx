@@ -3,7 +3,7 @@ cimport numpy as np
 import sys
 
 def load(file):
-    arrays.append(a)
+    result_array = np.array([])
     print("Opening file...")
     with open(file + '.str', 'r') as fp:
         line = fp.readline()
