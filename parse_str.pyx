@@ -7,7 +7,7 @@ def load(file):
     with open(file + '.str', 'r') as handle:
         loci = np.array([line.strip().split()[6:] for line in handle])
     print("Shaping loci...")
-    N = loci.shape[0]/2
+    N = loci.shape[0]//2
     L = loci.shape[1]
 
     genotype = np.zeros((N,L),dtype=np.uint8)
