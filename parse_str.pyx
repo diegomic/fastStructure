@@ -8,7 +8,7 @@ def load(file):
     with open(file + '.str', 'r') as handle:
         for line in handle:
             loci_array = np.array([line.strip().split()[6:]])
-            loci = np.append(loci, loci_a)
+            loci = np.append(loci, loci_array)
     print("Shaping loci...")
     N = loci.shape[0]//2
     L = loci.shape[1]
