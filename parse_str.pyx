@@ -4,8 +4,10 @@ import sys
 
 def load(file):
     # read in data from file
+    loci_array = np.array([])
     with open(file + '.str', 'r') as handle:
-        loci = np.array([line.strip().split()[6:] for line in handle])
+        for line in handle:
+            loci = np.append(loci_array, [line.strip().split()[6:]])
     print("Shaping loci...")
     N = loci.shape[0]//2
     L = loci.shape[1]
@@ -21,6 +23,7 @@ def load(file):
             alleles.remove('-9')
 
         # selecting major and minor alleles
+        print(alleles[0])
         major = alleles[0]
         try:
             minor = alleles[1]
