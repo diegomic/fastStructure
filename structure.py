@@ -196,5 +196,5 @@ if __name__ == "__main__":
                                                              params['prior'], params['cv'])
 
     # write out inferred parameters
-    log.info("Writing output...")
+    log.info("Writing output to %s" % params['outputfile'])
     write_output(Q, P, other, params)
