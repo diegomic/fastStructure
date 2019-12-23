@@ -12,17 +12,16 @@ def load(file):
     L = loci.shape[1]
 
     genotype = np.zeros((N,L),dtype=np.uint8)
-
+    print(genotype)
     for l,locus in enumerate(loci.T):
         alleles = list(np.unique(locus))
+        print(alleles)
 
         # assumes that missing alleles are coded as -9
         if '-9' in alleles:
-            print("Removing missing alleles...")
             alleles.remove('-9')
 
         # selecting major and minor alleles
-        print(alleles[0])
         major = alleles[0]
         try:
             minor = alleles[1]
