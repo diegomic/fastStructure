@@ -4,11 +4,9 @@ import sys
 
 def load(file):
     # read in data from file
-    loci= np.array([])
     with open(file + '.str', 'r') as handle:
-        for line in handle:
-            loci_array = np.array([line.strip().split()[6:]])
-            loci = np.append(loci, loci_array)
+        loci_list = [line.strip().split()[6:] for line in handle]
+    loci = np.asarray(loci_list)
     print("Shaping loci...")
     N = loci.shape[0]//2
     L = loci.shape[1]
