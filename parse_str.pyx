@@ -19,7 +19,7 @@ def load(file):
     loci_lists = []
     loci = np.array([])
 
-    for file in files:
+    for f in files:
         with open(file + '.str', 'r') as handle:
             loci_list = [line.strip().split()[6:] for line in handle]
             loci_lists.append(loci_list)
