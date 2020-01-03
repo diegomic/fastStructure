@@ -2,11 +2,30 @@ import numpy as np
 cimport numpy as np
 import sys
 
+
+def split_file(file):
+    number_of_files = 10
+    with open(file + '.str', 'r') as infp:
+        files = [open('%d.str' % i, 'w') for i in range(number_of_files)]
+        for i, line in enumerate(infp):
+            files[i % number_of_files].write(line)
+        for f in files:
+            f.close()
+    return files
+
 def load(file):
     # read in data from file
-    with open(file + '.str', 'r') as handle:
-        loci_list = [line.strip().split()[6:] for line in handle]
-    loci = np.asarray(loci_list)
+    files = split_file(file)
+    loci_lists = []
+    loci = np.array([])
+
+    for file in files:
+        with open(file + '.str', 'r') as handle:
+            loci_list = [line.strip().split()[6:] for line in handle]
+            loci_lists.append(loci_list)
+    for loci_l in loci_lists:
+        l = np.asarray(loci_l)
+        loci = np.append(loci, l)
     print("Shaping loci...")
     N = loci.shape[0]//2
     L = loci.shape[1]
