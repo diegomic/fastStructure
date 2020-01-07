@@ -7,11 +7,12 @@ def load(file):
     with open(file + '.str', 'r') as handle:
         loci_list = [line.strip().split()[6:] for line in handle]
     loci = np.asarray(loci_list)
+    del loci_list
     print("Shaping loci...")
     N = loci.shape[0]//2
     L = loci.shape[1]
 
-    genotype = np.zeros((N,L),dtype=np.uint8)
+    genotype = np.zeros((N,L), dtype=np.uint8)
     print(genotype)
     for l,locus in enumerate(loci.T):
         alleles = list(np.unique(locus))
