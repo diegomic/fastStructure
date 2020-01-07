@@ -2,6 +2,17 @@ import numpy as np
 cimport numpy as np
 import sys
 
+
+def split_file(file):
+    number_of_files = 10
+    with open(file + '.str', 'r') as infp:
+        files = [open(file + '_%d.str' % i, 'w') for i in range(number_of_files)]
+        for i, line in enumerate(infp):
+            files[i % number_of_files].write(line)
+        for f in files:
+            f.close()
+    return files
+
 def load(file):
     # read in data from file
     with open(file + '.str', 'r') as handle:
